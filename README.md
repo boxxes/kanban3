@@ -1,6 +1,6 @@
 # kanban3
 
-A single-file, dependency-free Kanban board for tracking IT project work (UOB IT PMO demo/training tool). Drag-and-drop task cards across Backlog, In Progress, Blocked, and Done columns, filter by project/assignee/priority, and add new tasks through a validated form. Board state is in-memory only — refreshing the page resets it to the seeded demo data by design.
+A single-file, dependency-free Kanban board for tracking IT project work (UOB IT PMO demo/training tool). Drag-and-drop task cards across To Do, In Progress, and Complete columns, see the whole pipeline at a glance in the flow overview diagram, filter by project/assignee/priority, and add new tasks through a validated form. Board state is in-memory only — refreshing the page resets it to the seeded demo data by design.
 
 ## Live demo
 
