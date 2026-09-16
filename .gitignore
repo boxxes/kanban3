@@ -1,0 +1,4 @@
+.playwright-mcp/
+.agents/
+.claude/skills/
+skills-lock.json

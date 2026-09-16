@@ -6,6 +6,8 @@ A single-file, dependency-free Kanban board for tracking IT project work (UOB IT
 
 https://boxxes.github.io/kanban3/
 
+![Screenshot of the Kanban board](screenshot.png)
+
 ## Running locally
 
 No install or build step — just open `index.html` directly in a browser:

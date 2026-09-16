@@ -7,30 +7,32 @@
   <title>UOB IT PMO | Kanban Board</title>
   <style>
     :root {
-      --blue-950: #092744;
-      --blue-900: #0c355c;
-      --blue-800: #124b80;
-      --blue-700: #1265a1;
-      --blue-500: #2686c7;
-      --blue-100: #e5f2fb;
-      --blue-050: #f5faff;
-      --ink: #172b3d;
-      --muted: #617588;
-      --line: #d7e3ec;
-      --surface: #ffffff;
-      --canvas: #eef4f8;
-      --critical: #c73c45;
-      --critical-bg: #fff0f1;
-      --high: #b97913;
-      --high-bg: #fff7e6;
-      --medium: #2474b9;
-      --medium-bg: #eaf5fd;
-      --low: #778897;
-      --low-bg: #f0f3f5;
-      --success: #18734b;
-      --warning: #9a5b06;
-      --shadow-sm: 0 1px 2px rgba(9, 39, 68, .07);
-      --shadow-md: 0 12px 28px rgba(9, 39, 68, .10);
+      --bg: #11151c;
+      --surface: #171b24;
+      --surface-2: #1e2330;
+      --surface-3: #262c3b;
+      --border: #2b3140;
+      --border-soft: #232936;
+      --ink: #e8eaf0;
+      --muted: #97a0b3;
+      --muted-dim: #6b7284;
+      --todo: #8890a1;
+      --progress: #e8b83d;
+      --progress-bg: rgba(232, 184, 61, .12);
+      --complete: #3fb968;
+      --complete-bg: rgba(63, 185, 104, .12);
+      --critical: #f2555c;
+      --critical-bg: rgba(242, 85, 92, .13);
+      --high: #ef9a4d;
+      --high-bg: rgba(239, 154, 77, .13);
+      --medium: #5b9dee;
+      --medium-bg: rgba(91, 157, 238, .13);
+      --low: #97a0b3;
+      --low-bg: rgba(151, 160, 179, .13);
+      --focus: #e8b83d;
+      --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --shadow-md: 0 16px 32px rgba(0, 0, 0, .35);
       --space-1: .25rem;
       --space-2: .5rem;
       --space-3: .75rem;
@@ -38,118 +40,156 @@
       --space-5: 1.25rem;
       --space-6: 1.5rem;
       --space-8: 2rem;
-      --radius-sm: 5px;
-      --radius-md: 9px;
-      --radius-lg: 14px;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 10px;
     }
 
     * { box-sizing: border-box; }
-    html { color-scheme: light; }
+    html { color-scheme: dark; }
     body {
       margin: 0;
       color: var(--ink);
-      background: var(--canvas);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      font-family: var(--font-sans);
       line-height: 1.45;
+      font-size: 15px;
     }
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
     button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-      outline: 3px solid rgba(38, 134, 199, .35);
+      outline: 2px solid var(--focus);
       outline-offset: 2px;
     }
     .topbar {
-      color: white;
-      background: linear-gradient(115deg, var(--blue-950), var(--blue-800));
-      border-bottom: 4px solid var(--blue-500);
+      color: var(--ink);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
     }
     .topbar-inner, .page-shell {
       width: min(1520px, calc(100% - 2 * var(--space-6)));
       margin: 0 auto;
     }
-    .topbar-inner { padding: var(--space-5) 0 var(--space-4); }
+    .topbar-inner { padding: var(--space-5) 0; }
     .brand-row, .summary-strip, .content-layout, .filter-row, .board-heading,
-    .card-header, .card-meta, .card-actions, .form-actions {
+    .card-top, .card-meta, .card-actions, .form-actions, .brand-id {
       display: flex;
       align-items: center;
     }
-    .brand-row { justify-content: space-between; gap: var(--space-4); }
-    .wordmark { margin: 0; font-size: clamp(1.2rem, 2vw, 1.65rem); letter-spacing: .02em; }
-    .eyebrow { margin: 0 0 var(--space-1); color: #a7d6f5; font-size: .72rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
-    .training-note { margin: 0; color: #d3e9f7; font-size: .82rem; }
-    .summary-strip { flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
-    .summary-item { min-width: 106px; padding: var(--space-3) var(--space-4); border: 1px solid rgba(255,255,255,.18); border-radius: var(--radius-sm); background: rgba(255,255,255,.08); }
-    .summary-value { display: block; font-size: 1.3rem; font-weight: 750; line-height: 1; }
-    .summary-label { display: block; margin-top: .25rem; color: #c5e0f1; font-size: .72rem; }
+    .brand-row { justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+    .brand-id { gap: var(--space-3); }
+    .win-dots { display: inline-flex; gap: .35rem; flex: none; }
+    .win-dots span { width: .6rem; height: .6rem; border-radius: 50%; display: inline-block; }
+    .win-dots span:nth-child(1) { background: var(--critical); }
+    .win-dots span:nth-child(2) { background: var(--progress); }
+    .win-dots span:nth-child(3) { background: var(--complete); }
+    .wordmark { margin: 0; font-size: clamp(1.05rem, 1.6vw, 1.3rem); font-weight: 700; }
+    .repo-slug { margin-left: .5rem; color: var(--muted-dim); font-family: var(--font-mono); font-size: .68em; font-weight: 500; }
+    .training-note { margin: .2rem 0 0; color: var(--muted); font-size: .82rem; }
+    .summary-strip { flex-wrap: wrap; gap: var(--space-2); }
+    .summary-item { min-width: 84px; padding: var(--space-2) var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); }
+    .summary-value { display: block; font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+    .summary-label { display: block; margin-top: .2rem; color: var(--muted); font-size: .68rem; }
     .page-shell { padding: var(--space-6) 0 var(--space-8); }
     .content-layout { align-items: flex-start; gap: var(--space-6); }
     .workspace { min-width: 0; flex: 1; }
-    .panel { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-sm); }
+    .panel { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
     .filter-panel { padding: var(--space-4); }
     .filter-row { flex-wrap: wrap; gap: var(--space-3); }
     .filter-field { flex: 1 1 170px; }
-    .filter-field label, .form-field label { display: block; margin-bottom: var(--space-1); color: var(--muted); font-size: .75rem; font-weight: 700; }
-    input, select, textarea { width: 100%; border: 1px solid #bdcfdd; border-radius: var(--radius-sm); color: var(--ink); background: #fff; }
-    input, select { min-height: 2.45rem; padding: .45rem .65rem; }
+    .filter-field label, .form-field label { display: block; margin-bottom: var(--space-1); color: var(--muted); font-size: .75rem; font-weight: 600; }
+    input, select, textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--ink); background: var(--surface-2); }
+    input, select { min-height: 2.4rem; padding: .45rem .65rem; }
     textarea { min-height: 5rem; padding: .55rem .65rem; resize: vertical; }
-    .board-heading { justify-content: space-between; gap: var(--space-3); margin: var(--space-6) 0 var(--space-3); }
-    .board-title { margin: 0; font-size: 1.05rem; }
-    .board-note { margin: 0; color: var(--muted); font-size: .75rem; }
-    .button-primary, .button-secondary, .icon-button {
-      border: 1px solid transparent; border-radius: var(--radius-sm); font-weight: 700; transition: background .15s ease, border-color .15s ease, transform .15s ease;
+    input::placeholder { color: var(--muted-dim); }
+    .board-heading { justify-content: space-between; gap: var(--space-3); margin: var(--space-6) 0 var(--space-3); flex-wrap: wrap; }
+    .board-title { margin: 0; font-size: 1rem; font-weight: 700; }
+    .board-note { margin: .15rem 0 0; color: var(--muted); font-size: .75rem; }
+    .diagram-panel { padding: var(--space-4); margin-bottom: var(--space-4); }
+    .diagram-head { margin-bottom: var(--space-3); }
+    .pipeline { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: var(--space-3); align-items: stretch; }
+    .pipeline-stage { min-width: 0; padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); display: flex; flex-direction: column; gap: var(--space-2); }
+    .pipeline-stage-head { justify-content: space-between; gap: var(--space-2); }
+    .pipeline-count { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 800; line-height: 1; color: var(--ink); }
+    .pipeline-chips { display: flex; flex-wrap: wrap; align-content: flex-start; gap: .35rem; max-height: 92px; overflow: hidden; }
+    .pipeline-connector { display: flex; align-items: center; justify-content: center; color: var(--muted-dim); font-size: 1.1rem; }
+    .chip { display: inline-flex; align-items: center; gap: .32rem; padding: .2rem .45rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-3); color: var(--muted); font-family: var(--font-mono); font-size: .65rem; }
+    .chip-empty { color: var(--muted-dim); border-style: dashed; font-family: var(--font-sans); font-size: .7rem; }
+    .chip-dot { flex: none; width: .42rem; height: .42rem; border-radius: 50%; }
+    .progress-track { display: flex; gap: 3px; height: 10px; margin-top: var(--space-4); border-radius: 999px; overflow: hidden; background: var(--surface-3); }
+    .progress-seg { height: 100%; border-radius: 999px; transition: width .2s ease; }
+    .progress-seg-todo { background: var(--todo); }
+    .progress-seg-progress { background: var(--progress); }
+    .progress-seg-complete { background: var(--complete); }
+    @media (max-width: 900px) {
+      .pipeline { grid-template-columns: 1fr; }
+      .pipeline-connector { transform: rotate(90deg); padding: .1rem 0; }
     }
-    .button-primary { padding: .62rem .9rem; color: white; background: var(--blue-700); }
-    .button-primary:hover { background: var(--blue-800); }
-    .button-primary:disabled { cursor: wait; opacity: .65; }
-    .button-secondary { padding: .45rem .7rem; color: var(--blue-800); border-color: var(--line); background: white; }
-    .button-secondary:hover { border-color: var(--blue-500); background: var(--blue-050); }
-    .board { display: grid; grid-template-columns: repeat(4, minmax(210px, 1fr)); gap: var(--space-4); align-items: start; }
-    .column { min-height: 360px; border: 1px solid var(--line); border-radius: var(--radius-md); background: #f7fafc; transition: background .15s ease, border-color .15s ease, box-shadow .15s ease; }
-    .column.is-drop-target { border-color: var(--blue-500); background: var(--blue-100); box-shadow: 0 0 0 3px rgba(38,134,199,.15); }
-    .column-header { display: flex; justify-content: space-between; align-items: center; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--line); background: rgba(255,255,255,.7); }
-    .column-name { margin: 0; color: var(--blue-900); font-size: .85rem; }
-    .count-badge { display: inline-flex; min-width: 1.55rem; height: 1.55rem; align-items: center; justify-content: center; border-radius: 999px; color: var(--blue-800); background: var(--blue-100); font-size: .72rem; font-weight: 800; }
+    .button-primary, .button-secondary, .icon-button {
+      border: 1px solid transparent; border-radius: var(--radius-sm); font-weight: 600; transition: background .15s ease, border-color .15s ease;
+    }
+    .button-primary { padding: .62rem .9rem; color: #17202b; background: var(--progress); }
+    .button-primary:hover { background: #f2c458; }
+    .button-primary:disabled { cursor: wait; opacity: .6; }
+    .button-secondary { padding: .45rem .7rem; color: var(--ink); border-color: var(--border); background: var(--surface-2); }
+    .button-secondary:hover { border-color: var(--muted-dim); }
+    .board { display: grid; grid-template-columns: repeat(3, minmax(240px, 1fr)); gap: var(--space-4); align-items: start; }
+    .column { min-height: 360px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); transition: border-color .15s ease, box-shadow .15s ease; }
+    .column.is-drop-target { border-color: var(--column-accent, var(--progress)); box-shadow: inset 0 0 0 1px var(--column-accent, var(--progress)); }
+    .column-header { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border-soft); }
+    .column-name-group { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+    .status-dot { flex: none; width: .55rem; height: .55rem; border-radius: 50%; }
+    .status-dot-todo { background: var(--todo); }
+    .status-dot-progress { background: var(--progress); }
+    .status-dot-complete { background: var(--complete); }
+    .column-name { margin: 0; color: var(--ink); font-size: .85rem; font-weight: 600; }
+    .count-badge { display: inline-flex; min-width: 1.5rem; height: 1.5rem; align-items: center; justify-content: center; border-radius: 999px; color: var(--muted); background: var(--surface-2); font-family: var(--font-mono); font-size: .72rem; font-weight: 700; }
     .column-list { display: grid; gap: var(--space-3); padding: var(--space-3); min-height: 300px; }
-    .task-card { position: relative; padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); border: 1px solid var(--line); border-left: 4px solid var(--medium); border-radius: var(--radius-sm); background: white; box-shadow: var(--shadow-sm); }
+    .task-card { padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); transition: border-color .15s ease, transform .12s ease, box-shadow .12s ease; }
     .task-card[draggable="true"] { cursor: grab; }
-    .task-card.is-dragging { opacity: .45; }
-    .priority-critical { border-left-color: var(--critical); }
-    .priority-high { border-left-color: var(--high); }
-    .priority-medium { border-left-color: var(--medium); }
-    .priority-low { border-left-color: var(--low); }
-    .card-header { justify-content: space-between; align-items: flex-start; gap: var(--space-2); }
-    .task-id { color: var(--muted); font-size: .68rem; font-weight: 800; letter-spacing: .05em; }
-    .card-title { margin: .18rem 0 var(--space-2); color: var(--blue-950); font-size: .9rem; line-height: 1.3; }
-    .icon-button { display: inline-grid; width: 1.7rem; height: 1.7rem; place-items: center; color: var(--muted); border-color: transparent; background: transparent; font-size: 1.2rem; line-height: 1; }
+    .task-card.is-dragging { opacity: .5; transform: scale(.98); }
+    .task-card:hover { border-color: var(--muted-dim); }
+    .card-top { justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-2); }
+    .card-id-group { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+    .task-id { color: var(--muted); font-family: var(--font-mono); font-size: .7rem; font-weight: 600; letter-spacing: .01em; }
+    .priority-dot { flex: none; width: .5rem; height: .5rem; border-radius: 50%; }
+    .priority-dot.priority-critical { background: var(--critical); }
+    .priority-dot.priority-high { background: var(--high); }
+    .priority-dot.priority-medium { background: var(--medium); }
+    .priority-dot.priority-low { background: var(--low); }
+    .card-title { margin: 0 0 var(--space-2); color: var(--ink); font-size: .9rem; font-weight: 600; line-height: 1.35; }
+    .icon-button { display: inline-grid; width: 1.6rem; height: 1.6rem; place-items: center; flex: none; color: var(--muted-dim); border-color: transparent; background: transparent; font-size: 1.15rem; line-height: 1; }
     .icon-button:hover { color: var(--critical); background: var(--critical-bg); }
     .card-meta { flex-wrap: wrap; gap: var(--space-2); color: var(--muted); font-size: .73rem; }
-    .card-project { margin: 0 0 var(--space-3); color: var(--blue-800); font-size: .75rem; font-weight: 700; }
-    .pill, .tag, .overdue-badge { display: inline-flex; align-items: center; width: fit-content; border-radius: 999px; font-size: .68rem; font-weight: 750; }
-    .pill { padding: .18rem .45rem; }
+    .card-project { margin: 0 0 var(--space-2); color: var(--muted); font-size: .75rem; font-weight: 500; }
+    .pill, .tag, .overdue-badge { display: inline-flex; align-items: center; width: fit-content; border-radius: 999px; font-size: .68rem; font-weight: 700; padding: .18rem .45rem; }
     .pill-critical { color: var(--critical); background: var(--critical-bg); }
     .pill-high { color: var(--high); background: var(--high-bg); }
     .pill-medium { color: var(--medium); background: var(--medium-bg); }
     .pill-low { color: var(--low); background: var(--low-bg); }
-    .tag { padding: .18rem .45rem; color: var(--blue-800); background: var(--blue-050); }
-    .overdue-badge { padding: .18rem .45rem; color: var(--critical); background: var(--critical-bg); }
-    .card-actions { justify-content: space-between; gap: var(--space-2); margin-top: var(--space-3); padding-top: var(--space-2); border-top: 1px solid #edf2f5; }
-    .move-control { min-width: 0; padding: .3rem .4rem; border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--blue-800); background: white; font-size: .72rem; }
-    .delete-confirm { display: flex; align-items: center; gap: .2rem; color: var(--critical); font-size: .7rem; font-weight: 750; }
-    .delete-confirm button { padding: .22rem .35rem; border: 0; border-radius: 3px; color: var(--critical); background: var(--critical-bg); font-size: .7rem; font-weight: 750; }
-    .empty-state { padding: var(--space-6) var(--space-3); color: var(--muted); font-size: .75rem; text-align: center; }
-    .form-panel { flex: 0 0 310px; position: sticky; top: var(--space-4); padding: var(--space-5); }
-    .form-title { margin: 0 0 .25rem; color: var(--blue-950); font-size: 1.05rem; }
+    .tag { color: var(--muted); background: var(--surface-3); }
+    .overdue-badge { color: var(--critical); background: var(--critical-bg); }
+    .card-actions { justify-content: space-between; gap: var(--space-2); margin-top: var(--space-3); padding-top: var(--space-2); border-top: 1px solid var(--border-soft); }
+    .move-control { min-width: 0; padding: .3rem .4rem; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--ink); background: var(--surface-3); font-size: .72rem; }
+    .delete-confirm { display: flex; align-items: center; gap: .3rem; color: var(--critical); font-size: .7rem; font-weight: 700; }
+    .delete-confirm button { padding: .22rem .4rem; border: 0; border-radius: 3px; color: var(--critical); background: var(--critical-bg); font-size: .7rem; font-weight: 700; }
+    .empty-state { padding: var(--space-6) var(--space-3); color: var(--muted-dim); font-size: .75rem; text-align: center; }
+    .form-panel { flex: 0 0 300px; position: sticky; top: var(--space-4); padding: var(--space-5); }
+    .form-title { margin: 0 0 .25rem; color: var(--ink); font-size: 1rem; font-weight: 700; }
     .form-intro { margin: 0 0 var(--space-5); color: var(--muted); font-size: .78rem; }
     .form-field { margin-bottom: var(--space-3); }
     .required { color: var(--critical); }
     .field-error { min-height: 1rem; margin: .2rem 0 0; color: var(--critical); font-size: .7rem; }
     .form-actions { justify-content: flex-end; margin-top: var(--space-4); }
     .toast-region { position: fixed; right: var(--space-5); bottom: var(--space-5); z-index: 5; display: grid; gap: var(--space-2); width: min(360px, calc(100vw - 2rem)); }
-    .toast { padding: var(--space-3) var(--space-4); border: 1px solid var(--line); border-left: 4px solid var(--blue-500); border-radius: var(--radius-sm); color: var(--ink); background: white; box-shadow: var(--shadow-md); font-size: .8rem; animation: toast-in .2s ease-out; }
-    .toast-warning { border-left-color: var(--warning); }
-    .toast-success { border-left-color: var(--success); }
+    .toast { padding: var(--space-3) var(--space-4); border: 1px solid var(--border); border-left: 3px solid var(--progress); border-radius: var(--radius-sm); color: var(--ink); background: var(--surface-2); box-shadow: var(--shadow-md); font-size: .8rem; animation: toast-in .2s ease-out; }
+    .toast-warning { border-left-color: var(--high); }
+    .toast-success { border-left-color: var(--complete); }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
     @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) {
+      .task-card, .column, .toast { animation: none !important; transition: none !important; }
+    }
     @media (max-width: 1050px) {
       .content-layout { display: block; }
       .form-panel { position: static; margin-top: var(--space-6); }
@@ -168,10 +208,12 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand-row">
-        <div>
-          <p class="eyebrow">Internal demo and training tool</p>
-          <h1 class="wordmark">UOB IT PMO</h1>
-          <p class="training-note">Project delivery overview</p>
+        <div class="brand-id">
+          <span class="win-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+          <div>
+            <h1 class="wordmark">UOB IT PMO<span class="repo-slug">/kanban-board</span></h1>
+            <p class="training-note">Internal demo and training tool for project delivery</p>
+          </div>
         </div>
         <div class="summary-strip" id="summaryStrip" aria-label="Board summary"></div>
       </div>
@@ -181,6 +223,15 @@
   <main class="page-shell">
     <div class="content-layout">
       <section class="workspace" aria-labelledby="boardHeading">
+        <div class="panel diagram-panel" aria-labelledby="diagramHeading">
+          <div class="diagram-head">
+            <h2 class="board-title" id="diagramHeading">Flow overview</h2>
+            <p class="board-note">Every task, at a glance — grouped by stage.</p>
+          </div>
+          <div class="pipeline" id="pipeline"></div>
+          <div class="progress-track" id="progressTrack" role="img" aria-label="Task distribution across stages"></div>
+        </div>
+
         <div class="panel filter-panel">
           <div class="filter-row">
             <div class="filter-field">
@@ -284,10 +335,9 @@
           <div class="form-field">
             <label for="status">Status <span class="required">*</span></label>
             <select id="status" name="status" required>
-              <option>Backlog</option>
+              <option>To Do</option>
               <option>In Progress</option>
-              <option>Blocked</option>
-              <option>Done</option>
+              <option>Complete</option>
             </select>
             <p class="field-error" id="statusError" aria-live="polite"></p>
           </div>
@@ -305,17 +355,18 @@
     // FormSubmit requires one-time activation: the first submission sends a confirmation email, and delivery starts after its link is clicked.
     const FORMSUBMIT_ENDPOINT = "https://formsubmit.co/ajax/YOUR_EMAIL@example.com";
 
-    const COLUMN_NAMES = ["Backlog", "In Progress", "Blocked", "Done"];
+    const COLUMN_NAMES = ["To Do", "In Progress", "Complete"];
+    const COLUMN_DOT_CLASS = { "To Do": "status-dot-todo", "In Progress": "status-dot-progress", "Complete": "status-dot-complete" };
     const state = {
       tasks: [
         { id: "UOB-ITPM-0001", title: "Migrate FX pricing service to AWS", description: "Move the pricing service to the approved landing zone.", project: "Infrastructure & Cloud", category: "Infrastructure", assignee: "Alicia Tan", priority: "High", dueDate: "2026-09-21", status: "In Progress" },
-        { id: "UOB-ITPM-0002", title: "Patch CVE-2025-XXXX on branch teller VDI", description: "Coordinate the endpoint patch wave with branch operations.", project: "Cybersecurity Uplift", category: "Cybersecurity", assignee: "Marcus Lim", priority: "Critical", dueDate: "2026-09-18", status: "Blocked" },
+        { id: "UOB-ITPM-0002", title: "Patch CVE-2025-XXXX on branch teller VDI", description: "Coordinate the endpoint patch wave with branch operations.", project: "Cybersecurity Uplift", category: "Cybersecurity", assignee: "Marcus Lim", priority: "Critical", dueDate: "2026-09-18", status: "In Progress" },
         { id: "UOB-ITPM-0003", title: "UAT sign-off for mobile onboarding release 4.2", description: "Collect business owner sign-off for the release candidate.", project: "Digital Channels", category: "Compliance", assignee: "Priya Nair", priority: "High", dueDate: "2026-09-25", status: "In Progress" },
-        { id: "UOB-ITPM-0004", title: "Define data retention rules for analytics lake", description: "Document retention and deletion requirements with risk.", project: "Data & Analytics", category: "Data", assignee: "Ethan Koh", priority: "Medium", dueDate: "2026-10-03", status: "Backlog" },
-        { id: "UOB-ITPM-0005", title: "Renew settlement gateway vendor certificate", description: "Validate the renewal window and update the runbook.", project: "Vendor Management", category: "Vendor", assignee: "Chloe Wong", priority: "High", dueDate: "2026-09-16", status: "Blocked" },
-        { id: "UOB-ITPM-0006", title: "Complete core banking cutover rehearsal", description: "Run the final rehearsal with operations and service desk.", project: "Core Banking Upgrade", category: "Application Development", assignee: "Daniel Ho", priority: "Critical", dueDate: "2026-09-12", status: "Done" },
-        { id: "UOB-ITPM-0007", title: "Archive legacy batch scheduler jobs", description: "Confirm ownership and archive unused production schedules.", project: "Core Banking Upgrade", category: "Infrastructure", assignee: "Siti Rahman", priority: "Low", dueDate: "2026-09-30", status: "Done" },
-        { id: "UOB-ITPM-0008", title: "Review privileged access recertification", description: "Review exceptions and close the quarterly evidence pack.", project: "Cybersecurity Uplift", category: "Compliance", assignee: "Marcus Lim", priority: "Medium", dueDate: "2026-09-14", status: "Backlog" }
+        { id: "UOB-ITPM-0004", title: "Define data retention rules for analytics lake", description: "Document retention and deletion requirements with risk.", project: "Data & Analytics", category: "Data", assignee: "Ethan Koh", priority: "Medium", dueDate: "2026-10-03", status: "To Do" },
+        { id: "UOB-ITPM-0005", title: "Renew settlement gateway vendor certificate", description: "Validate the renewal window and update the runbook.", project: "Vendor Management", category: "Vendor", assignee: "Chloe Wong", priority: "High", dueDate: "2026-09-16", status: "In Progress" },
+        { id: "UOB-ITPM-0006", title: "Complete core banking cutover rehearsal", description: "Run the final rehearsal with operations and service desk.", project: "Core Banking Upgrade", category: "Application Development", assignee: "Daniel Ho", priority: "Critical", dueDate: "2026-09-12", status: "Complete" },
+        { id: "UOB-ITPM-0007", title: "Archive legacy batch scheduler jobs", description: "Confirm ownership and archive unused production schedules.", project: "Core Banking Upgrade", category: "Infrastructure", assignee: "Siti Rahman", priority: "Low", dueDate: "2026-09-30", status: "Complete" },
+        { id: "UOB-ITPM-0008", title: "Review privileged access recertification", description: "Review exceptions and close the quarterly evidence pack.", project: "Cybersecurity Uplift", category: "Compliance", assignee: "Marcus Lim", priority: "Medium", dueDate: "2026-09-14", status: "To Do" }
       ],
       filters: { project: "", assignee: "", priority: "" }
     };
@@ -330,7 +381,7 @@
     }
 
     function isOverdue(task) {
-      return task.status !== "Done" && task.dueDate < getToday();
+      return task.status !== "Complete" && task.dueDate < getToday();
     }
 
     function priorityClass(priority) {
@@ -342,30 +393,57 @@
       const overdue = state.tasks.filter(isOverdue).length;
       document.getElementById("summaryStrip").innerHTML = [
         ["Total", state.tasks.length],
-        ["Backlog", counts.Backlog],
+        ["To do", counts["To Do"]],
         ["In progress", counts["In Progress"]],
-        ["Blocked", counts.Blocked],
-        ["Done", counts.Done],
+        ["Complete", counts.Complete],
         ["Overdue", overdue]
       ].map(([label, value]) => `<div class="summary-item"><span class="summary-value">${value}</span><span class="summary-label">${escapeHtml(label)}</span></div>`).join("");
+    }
+
+    function renderChip(task) {
+      return `<span class="chip" title="${escapeHtml(task.title)}"><span class="chip-dot priority-${escapeHtml(priorityClass(task.priority))}"></span>${escapeHtml(task.id.replace("UOB-ITPM-", "#"))}</span>`;
+    }
+
+    function renderPipeline() {
+      const total = state.tasks.length;
+      document.getElementById("pipeline").innerHTML = COLUMN_NAMES.map((column, index) => {
+        const tasks = state.tasks.filter((task) => task.status === column);
+        const chips = tasks.length ? tasks.map(renderChip).join("") : '<span class="chip chip-empty">No tasks</span>';
+        const connector = index < COLUMN_NAMES.length - 1 ? '<div class="pipeline-connector" aria-hidden="true">&rarr;</div>' : "";
+        return `<div class="pipeline-stage">
+          <div class="pipeline-stage-head">
+            <span class="column-name-group"><span class="status-dot ${COLUMN_DOT_CLASS[column]}" aria-hidden="true"></span><span class="column-name">${escapeHtml(column)}</span></span>
+            <span class="pipeline-count">${tasks.length}</span>
+          </div>
+          <div class="pipeline-chips">${chips}</div>
+        </div>${connector}`;
+      }).join("");
+      document.getElementById("progressTrack").innerHTML = COLUMN_NAMES.map((column) => {
+        const count = state.tasks.filter((task) => task.status === column).length;
+        if (!count) return "";
+        const pct = total ? (count / total) * 100 : 0;
+        const segClass = COLUMN_DOT_CLASS[column].replace("status-dot-", "progress-seg-");
+        return `<span class="progress-seg ${segClass}" style="width:${pct}%" title="${escapeHtml(column)}: ${count} of ${total}"></span>`;
+      }).join("");
     }
 
     function renderCard(task) {
       const moveOptions = COLUMN_NAMES.map((column) => `<option value="${escapeHtml(column)}" ${column === task.status ? "selected" : ""}>${escapeHtml(column)}</option>`).join("");
       const overdueBadge = isOverdue(task) ? '<span class="overdue-badge">Overdue</span>' : "";
-      return `<article class="task-card priority-${escapeHtml(priorityClass(task.priority))}" draggable="true" data-task-id="${escapeHtml(task.id)}" aria-label="${escapeHtml(task.title)}">
-        <div class="card-header">
-          <div>
-            <div class="task-id">${escapeHtml(task.id)}</div>
-            <h3 class="card-title">${escapeHtml(task.title)}</h3>
+      return `<article class="task-card" draggable="true" data-task-id="${escapeHtml(task.id)}" aria-label="${escapeHtml(task.title)}">
+        <div class="card-top">
+          <div class="card-id-group">
+            <span class="priority-dot priority-${escapeHtml(priorityClass(task.priority))}" title="${escapeHtml(task.priority)} priority"></span>
+            <span class="task-id">${escapeHtml(task.id)}</span>
           </div>
           <button class="icon-button delete-button" type="button" aria-label="Delete ${escapeHtml(task.title)}" data-action="delete">&times;</button>
         </div>
+        <h3 class="card-title">${escapeHtml(task.title)}</h3>
         <p class="card-project">${escapeHtml(task.project)}</p>
         <div class="card-meta">
-          <span>Assignee: ${escapeHtml(task.assignee)}</span>
+          <span>${escapeHtml(task.assignee)}</span>
           <span class="pill pill-${escapeHtml(priorityClass(task.priority))}">${escapeHtml(task.priority)}</span>
-          <span>Due: ${escapeHtml(task.dueDate)}</span>
+          <span>Due ${escapeHtml(task.dueDate)}</span>
           <span class="tag">${escapeHtml(task.category)}</span>
           ${overdueBadge}
         </div>
@@ -393,12 +471,19 @@
 
     function renderBoard() {
       renderSummary();
+      renderPipeline();
       const board = document.getElementById("board");
       const visibleTasks = applyFilters(state.tasks);
       board.innerHTML = COLUMN_NAMES.map((column) => {
         const columnTasks = visibleTasks.filter((task) => task.status === column);
         return `<section class="column" data-status="${escapeHtml(column)}" aria-labelledby="heading-${escapeHtml(column)}">
-          <header class="column-header"><h3 class="column-name" id="heading-${escapeHtml(column)}">${escapeHtml(column)}</h3><span class="count-badge">${columnTasks.length}</span></header>
+          <header class="column-header">
+            <div class="column-name-group">
+              <span class="status-dot ${COLUMN_DOT_CLASS[column]}" aria-hidden="true"></span>
+              <h3 class="column-name" id="heading-${escapeHtml(column)}">${escapeHtml(column)}</h3>
+            </div>
+            <span class="count-badge">${columnTasks.length}</span>
+          </header>
           <div class="column-list" data-drop-status="${escapeHtml(column)}">${columnTasks.length ? columnTasks.map(renderCard).join("") : '<p class="empty-state">No matching tasks</p>'}</div>
         </section>`;
       }).join("");
@@ -432,7 +517,12 @@
         card.addEventListener("dragend", () => card.classList.remove("is-dragging"));
       });
       document.querySelectorAll(".column").forEach((column) => {
-        column.addEventListener("dragover", (event) => { event.preventDefault(); column.classList.add("is-drop-target"); });
+        const accentVar = `var(--${COLUMN_DOT_CLASS[column.dataset.status].replace("status-dot-", "")})`;
+        column.addEventListener("dragover", (event) => {
+          event.preventDefault();
+          column.style.setProperty("--column-accent", accentVar);
+          column.classList.add("is-drop-target");
+        });
         column.addEventListener("dragleave", (event) => { if (!column.contains(event.relatedTarget)) column.classList.remove("is-drop-target"); });
         column.addEventListener("drop", (event) => {
           event.preventDefault();

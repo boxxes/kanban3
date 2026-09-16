@@ -92,18 +92,31 @@ If nothing is found, say so briefly and continue.
    workflow run doesn't always mean the URL is actually serving yet, so verify directly and retry
    a few times with short waits if needed.
 
-## Step 4 — README
+## Step 4 — Screenshot
+
+Using the `playwright` MCP tool (not a manual `npx`/CLI invocation — if its tools aren't
+available in this session because the MCP server failed to connect, report that and skip this
+step rather than working around it), navigate to the verified Pages URL from Step 3 and capture a
+full-page screenshot of the app in its default state. Save it into the repo (e.g.
+`screenshot.png` at the repo root, overwriting any existing one) so Step 5 can embed it.
+
+If this step is skipped or fails, continue with the rest of publishing rather than blocking on it
+— note in the final report that the screenshot wasn't updated.
+
+## Step 5 — README
 
 Create `README.md` if missing, or update the existing one, so it includes at minimum:
 - A title and one/two-sentence description of what the project is.
 - A "Live demo" (or similarly named) section linking the verified Pages URL from Step 3.
+- A screenshot section embedding `screenshot.png` from Step 4, if it was captured.
 - Anything else already true of the project worth keeping (don't invent features it doesn't
   have). If a README already exists with real content, edit it in place rather than replacing it
-  wholesale — add/update the live-demo link and leave the rest intact unless it's stale.
+  wholesale — add/update the live-demo link and screenshot and leave the rest intact unless it's
+  stale.
 
-Commit and push this change.
+Commit and push this change (including `screenshot.png` if it was added/changed).
 
-## Step 5 — GitHub "About" section
+## Step 6 — GitHub "About" section
 
 Update the repo's description and homepage via
 `PATCH /repos/{owner}/{repo}` (`gh repo edit --description "..." --homepage "<pages-url>"` if
@@ -111,12 +124,13 @@ Update the repo's description and homepage via
 3) so the About panel on the repo page shows a short description and links to the live Pages
 site.
 
-## Step 6 — Final report to the user
+## Step 7 — Final report to the user
 
 Summarize plainly:
 - Security scan result (clean, or what was found and how it was resolved).
 - What was pushed (branch, commit(s)).
 - The live GitHub Pages URL, confirmed non-404.
+- Whether the screenshot was captured/updated (or why it was skipped).
 - That the README and About section were updated.
 
 Do not include any secret values, tokens, or credentials anywhere in this report.
